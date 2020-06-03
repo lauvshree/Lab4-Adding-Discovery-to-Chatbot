@@ -54,11 +54,11 @@ async function recommendCourse(queryResult) {
   }
 }
 
-async function answerFaq(queryResult) {
+async function answerFaq(queryResult,input) {
     try {
       textContent = queryResult.results[0].source;
         return {
-            res: textContent
+            res: "<a href='"+textContent+"'>"+input+"</a>"
         }
     } catch (err) {
       throw new Error("Sorry, we are unable to find the answer from Help Centre.");
@@ -109,7 +109,7 @@ const CourseraAdvisor = {
       if (intent === "course_recommendation") {
         res = await recommendCourse(queryResult);
       } else {
-        res = await answerFaq(queryResult);
+        res = await answerFaq(queryResult,input);
       }
 
       return res;
