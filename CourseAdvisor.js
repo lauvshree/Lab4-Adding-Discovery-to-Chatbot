@@ -37,7 +37,7 @@ async function recommendCourse(queryResult) {
       if (courses.length <= 3) {
         const course = {
           name: result.name,
-          link: `https://www.coursera.org/learn/${result.slug}`,
+          link: `https://www.edx.org/search?q=${result.slug}`,
           description: result.description.split(".")[0]
         };
         courses.push(course);
@@ -55,22 +55,16 @@ async function recommendCourse(queryResult) {
 }
 
 async function answerFaq(queryResult) {
-  try {
-    textContent = queryResult.results[0].text;
-    splitTextContent = textContent.split("\n\n");
-
-    if (splitTextContent.length >= 9) {
-      return {
-        res: splitTextContent[6] + splitTextContent[7] + splitTextContent[8]
-      };
+    try {
+      textContent = queryResult.results[0].source;
+        return {
+            res: textContent
+        }
+    } catch (err) {
+      throw new Error("Sorry, we are unable to find the answer from Help Centre.");
     }
-    throw new Error(
-      "Sorry, we are unable to find the answer from Help Centre."
-    );
-  } catch (err) {
-    throw new Error(err.message);
   }
-}
+
 
 const CourseraAdvisor = {
   async connectDiscovery(params) {
@@ -89,7 +83,7 @@ const CourseraAdvisor = {
       if (intent === "course_recommendation") {
         enrichedField = "description";
       } else if (intent === "faq") {
-        enrichedField = "text";
+        enrichedField = "content";
       } else {
         throw new Error(`Intent: ${intent} cannot be recognized`);
       }
