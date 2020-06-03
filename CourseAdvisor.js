@@ -54,16 +54,18 @@ async function recommendCourse(queryResult) {
   }
 }
 
-async function answerFaq(queryResult,input) {
+async function answerFaq(queryResult) {
     try {
-      textContent = queryResult.results[0].source;
+        textContent = queryResult.results[0].content;
+        textContent = textContent.replace(/\n/g,"<br/>")
+        link = queryResult.results[0].source;
         return {
-            res: "<a href='"+textContent+"'>"+input+"</a>"
+            res: textContent+"<br/><a href='"+link+"'>Click here for more</a>"
         }
     } catch (err) {
       throw new Error("Sorry, we are unable to find the answer from Help Centre.");
     }
-  }
+}
 
 
 const CourseraAdvisor = {
@@ -109,7 +111,7 @@ const CourseraAdvisor = {
       if (intent === "course_recommendation") {
         res = await recommendCourse(queryResult);
       } else {
-        res = await answerFaq(queryResult,input);
+        res = await answerFaq(queryResult);
       }
 
       return res;
